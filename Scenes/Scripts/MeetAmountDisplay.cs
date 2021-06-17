@@ -11,15 +11,15 @@ public class MeetAmountDisplay : MonoBehaviour
 
     private void OnEnable()
     {
-        _playerBellyful.SatietyAlert += DisplayAmountOfMeat;
+        _playerBellyful.SatietyChanged += OnSatietyChanged;
     }
 
     private void OnDisable()
     {
-        _playerBellyful.SatietyAlert -= DisplayAmountOfMeat;
+        _playerBellyful.SatietyChanged -= OnSatietyChanged;
     }    
 
-    private void DisplayAmountOfMeat(int meatAmount)
+    private void OnSatietyChanged(int meatAmount)
     {
         _textDsiplay.text = meatAmount.ToString();
     }    

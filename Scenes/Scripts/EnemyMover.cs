@@ -7,11 +7,11 @@ public class EnemyMover : MonoBehaviour
     [SerializeField] private Transform _path;
     [SerializeField] private float _speed;    
 
-    private float RotationSpeed = 4f;
-    private float AnglesToRotate = 90f;
+    private float _rotationSpeed = 4f;
+    private float _anglesToRotate = 90f;
     private Transform[] _points;
     private int _currentPoint = 1;
-    private bool ReverseDirection = false;
+    private bool _reverseDirection = false;
     private int _rotationDirection = -1;
     
     private void Start()
@@ -24,21 +24,21 @@ public class EnemyMover : MonoBehaviour
         }
     }
    
-    void Update()
+    private void Update()
     {
         Transform target = _points[_currentPoint];
         transform.position = Vector3.MoveTowards(transform.position, target.position, _speed * Time.deltaTime);        
-        transform.Rotate(Vector3.forward, AnglesToRotate * _rotationDirection * RotationSpeed * Time.deltaTime);
+        transform.Rotate(Vector3.forward, _anglesToRotate * _rotationDirection * _rotationSpeed * Time.deltaTime);
 
         if (transform.position == target.position)
         {
             if (_currentPoint == _points.Length - 1 || _currentPoint == 0)
             {
-                ReverseDirection = !ReverseDirection;
+                _reverseDirection = !_reverseDirection;
                 _rotationDirection *= -1;
             }
             
-            _currentPoint = ReverseDirection? --_currentPoint: ++_currentPoint;
+            _currentPoint = _reverseDirection? --_currentPoint: ++_currentPoint;
         }
     }
 }

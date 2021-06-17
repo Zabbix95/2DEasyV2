@@ -8,7 +8,7 @@ public class EnemyTrigger : MonoBehaviour
     {
         if (collision.TryGetComponent(out PlayerBellyful player))
         {            
-            player.SatietyChanged(true);            
+            player.SatietyAlert(true);            
             Destroy(gameObject);
         }
     }

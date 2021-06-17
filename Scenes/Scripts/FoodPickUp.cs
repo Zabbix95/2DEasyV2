@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class FoodPickUp : MonoBehaviour
 {
     private float _destroyDelay = 1f;
     private SpriteRenderer _sprite;
+
     public UnityEvent FoodPickedUp;
 
     private void Awake()
@@ -19,7 +22,8 @@ public class FoodPickUp : MonoBehaviour
         if (collision.TryGetComponent(out PlayerBellyful player))
         {
             FoodPickedUp?.Invoke();
-            player.SatietyChanged(false);
+
+            player.SatietyAlert(false);
             _sprite.enabled = false;
             Destroy(gameObject, _destroyDelay);
         }

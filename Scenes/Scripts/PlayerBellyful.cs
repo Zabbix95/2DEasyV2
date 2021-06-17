@@ -7,11 +7,12 @@ public class PlayerBellyful : MonoBehaviour
 {
     private int _meatAmount = 0;
 
-    public event UnityAction<int> SatietyAlert;
+    public UnityAction<int> SatietyChanged;
 
-    public void SatietyChanged(bool hungry)
+    public void SatietyAlert(bool hungry)
     {
         _meatAmount = hungry ? --_meatAmount : ++_meatAmount;
-        SatietyAlert?.Invoke(_meatAmount);
+
+        SatietyChanged?.Invoke(_meatAmount);
     }    
 }

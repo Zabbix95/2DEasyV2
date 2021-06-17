@@ -23,13 +23,13 @@ public class PlayerController : MonoBehaviour
     private RaycastHit2D[] _hitBuffer = new RaycastHit2D[16];
     private List<RaycastHit2D> _hitBufferList = new List<RaycastHit2D>(16);
     private Vector2 _currentNormal;
-    private const float minMoveDistance = 0.001f;
-    private const float shellRadius = 0.01f;
+    private const float _minMoveDistance = 0.001f;
+    private const float _shellRadius = 0.01f;
     private float _speedWalk = 1f;
     private float _speedRun = 2f;
-    [SerializeField] private float _currentSpeed;
+    private float _currentSpeed;
 
-    void OnEnable()
+    private void OnEnable()
     {
         _rb2d = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CapsuleCollider2D>();
@@ -38,14 +38,14 @@ public class PlayerController : MonoBehaviour
         _weapon = FindObjectOfType<PlayerWeapon>().GetComponent<SpriteRenderer>();
     }
 
-    void Start()
+    private void Start()
     {
         _contactFilter.useTriggers = false;
         _contactFilter.SetLayerMask(LayerMask);
         _contactFilter.useLayerMask = true;
     }
 
-    void Update()
+    private void Update()
     {
         _currentSpeed = SetSpeed();
         float vectorX = Input.GetAxis("Horizontal") * _currentSpeed;        
@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
         SetSpriteVelocity(vectorX);       
     }    
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         Velocity += GravityModifier * Physics2D.gravity * Time.deltaTime;
         Velocity.x = _targetVelocity.x;
@@ -75,13 +75,13 @@ public class PlayerController : MonoBehaviour
         Movement(move, true);
     }
 
-    void Movement(Vector2 move, bool yMovement)
+    private void Movement(Vector2 move, bool yMovement)
     {
         float distance = move.magnitude;
 
-        if (distance > minMoveDistance)
+        if (distance > _minMoveDistance)
         {
-            int count = _rb2d.Cast(move, _contactFilter, _hitBuffer, distance + shellRadius);
+            int count = _rb2d.Cast(move, _contactFilter, _hitBuffer, distance + _shellRadius);
 
             _hitBufferList.Clear();
 
@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
                     Velocity = Velocity - projection * _currentNormal;
                 }
 
-                float modifiedDistance = _hitBufferList[i].distance - shellRadius;
+                float modifiedDistance = _hitBufferList[i].distance - _shellRadius;
                 distance = modifiedDistance < distance ? modifiedDistance : distance;
             }
         }
@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
     {
         if (vectorX != 0)
         {
-            _body.flipX = _weapon.flipX =vectorX < 0;            
+            _body.flipX = _weapon.flipX = vectorX < 0;            
             SetAnimationClip(vectorX);
         }
     }
