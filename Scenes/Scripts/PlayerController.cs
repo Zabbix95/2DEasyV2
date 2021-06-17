@@ -6,10 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float MinGroundNormalY = .65f;
-    [SerializeField] private float GravityModifier = 1f;
-    [SerializeField] private Vector2 Velocity;
-    [SerializeField] private LayerMask LayerMask;
+    [SerializeField] private float _minGroundNormalY = .65f;
+    [SerializeField] private float _gravityModifier = 1f;
+    [SerializeField] private Vector2 _velocity;
+    [SerializeField] private LayerMask _layerMask;
 
     private CapsuleCollider2D _collider;
     private SpriteRenderer _body;
@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _contactFilter.useTriggers = false;
-        _contactFilter.SetLayerMask(LayerMask);
+        _contactFilter.SetLayerMask(_layerMask);
         _contactFilter.useLayerMask = true;
     }
 
@@ -52,19 +52,19 @@ public class PlayerController : MonoBehaviour
         _targetVelocity = new Vector2(vectorX, 0);
 
         if (Input.GetKey(KeyCode.Space) && _grounded)
-            Velocity.y = 5;
+            _velocity.y = 5;
 
         SetSpriteVelocity(vectorX);       
     }    
 
     private void FixedUpdate()
     {
-        Velocity += GravityModifier * Physics2D.gravity * Time.deltaTime;
-        Velocity.x = _targetVelocity.x;
+        _velocity += _gravityModifier * Physics2D.gravity * Time.deltaTime;
+        _velocity.x = _targetVelocity.x;
 
         _grounded = false;
 
-        Vector2 deltaPosition = Velocity * Time.deltaTime;
+        Vector2 deltaPosition = _velocity * Time.deltaTime;
         Vector2 moveAlongGround = new Vector2(_groundNormal.y, -_groundNormal.x);
         Vector2 move = moveAlongGround * deltaPosition.x;        
 
@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour
             {
                 _currentNormal = _hitBufferList[i].normal;
                 
-                if (_currentNormal.y > MinGroundNormalY)
+                if (_currentNormal.y > _minGroundNormalY)
                 {
                     _grounded = true;
                     if (yMovement)
@@ -104,10 +104,10 @@ public class PlayerController : MonoBehaviour
                     }
                 }
 
-                float projection = Vector2.Dot(Velocity, _currentNormal);
+                float projection = Vector2.Dot(_velocity, _currentNormal);
                 if (projection < 0)
                 {
-                    Velocity = Velocity - projection * _currentNormal;
+                    _velocity = _velocity - projection * _currentNormal;
                 }
 
                 float modifiedDistance = _hitBufferList[i].distance - _shellRadius;
