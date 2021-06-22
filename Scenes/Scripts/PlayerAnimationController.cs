@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerController))]
+[RequireComponent(typeof(PlayerMover))]
 public class PlayerAnimationController : MonoBehaviour
 {
-    private PlayerController _controller;
+    private PlayerMover _controller;
     private Animator _animator;
     private SpriteRenderer _body;
     private SpriteRenderer _weapon;
 
     private void Start()
     {
-        _controller = GetComponent<PlayerController>();     
+        _controller = GetComponent<PlayerMover>();     
         _animator = GetComponentInChildren<Animator>();
         _body = GetComponentInChildren<SpriteRenderer>();
         _weapon = FindObjectOfType<PlayerWeapon>().GetComponent<SpriteRenderer>();
