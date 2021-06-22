@@ -3,18 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float _minGroundNormalY = .65f;
     [SerializeField] private float _gravityModifier = 1f;
     [SerializeField] private Vector2 _velocity;
-    [SerializeField] private LayerMask _layerMask;
-
-    private CapsuleCollider2D _collider;
-    private SpriteRenderer _body;
-    private SpriteRenderer _weapon;
-    private Animator _animator;
+    [SerializeField] private LayerMask _layerMask;    
+    
+    
     private Vector2 _targetVelocity;
     private bool _grounded;
     private Vector2 _groundNormal;
@@ -29,13 +26,11 @@ public class PlayerController : MonoBehaviour
     private float _speedRun = 2f;
     private float _currentSpeed;
 
+    public float CurrentSpeed => _currentSpeed;
+
     private void OnEnable()
     {
-        _rb2d = GetComponent<Rigidbody2D>();
-        _collider = GetComponent<CapsuleCollider2D>();
-        _animator = GetComponentInChildren<Animator>();
-        _body = GetComponentInChildren<SpriteRenderer>();
-        _weapon = FindObjectOfType<PlayerWeapon>().GetComponent<SpriteRenderer>();
+        _rb2d = GetComponent<Rigidbody2D>();  
     }
 
     private void Start()
@@ -46,15 +41,9 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Update()
-    {
-        _currentSpeed = SetSpeed();
-        float vectorX = Input.GetAxis("Horizontal") * _currentSpeed;        
-        _targetVelocity = new Vector2(vectorX, 0);
-
-        if (Input.GetKey(KeyCode.Space) && _grounded)
-            _velocity.y = 5;
-
-        SetSpriteVelocity(vectorX);       
+    {      
+        _targetVelocity = SetSpeed();
+        TryJump();                     
     }    
 
     private void FixedUpdate()
@@ -116,25 +105,19 @@ public class PlayerController : MonoBehaviour
         }
 
         _rb2d.position = _rb2d.position + move.normalized * distance;
+    }  
+
+    private Vector2 SetSpeed()
+    {
+        _currentSpeed =  Input.GetKey(KeyCode.LeftShift) ? _speedRun : _speedWalk;
+        _currentSpeed *= Input.GetAxis("Horizontal");
+        return new Vector2(_currentSpeed, 0);
     }
 
-    private void SetSpriteVelocity(float vectorX)
+    private void TryJump()
     {
-        if (vectorX != 0)
-        {
-            _body.flipX = _weapon.flipX = vectorX < 0;            
-            SetAnimationClip(vectorX);
-        }
-    }
-
-    private void SetAnimationClip(float vectorX)
-    {
-        _animator.SetFloat("HorizontalAxis", vectorX);
-    }
-
-    private float SetSpeed()
-    {
-        return Input.GetKey(KeyCode.LeftShift) ? _speedRun : _speedWalk;        
+        if (Input.GetKey(KeyCode.Space) && _grounded)
+            _velocity.y = 5;
     }
 }
 
